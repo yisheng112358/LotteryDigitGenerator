@@ -18,7 +18,7 @@ public class BigLotteryNumberGenerator {
 	private final static int startNmuber = 1;
 	private final static int endNmuber = 42;
 
-	public static Set<SortedSet<Integer>> luckyNumberMapsGenerator(int checkedTicketNumber) {
+	public static Set<SortedSet<Integer>> luckyNumberSetsGenerator(int checkedTicketNumber) {
 		Set<SortedSet<Integer>> luckyNumberSets = new HashSet<SortedSet<Integer>>();
 		while (luckyNumberSets.size() < checkedTicketNumber) {
 			Map<SortedSet<Integer>, Integer> luckyNumberMaps = new HashMap<SortedSet<Integer>, Integer>();
