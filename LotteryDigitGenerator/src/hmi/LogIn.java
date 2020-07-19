@@ -2,6 +2,8 @@ package hmi;
 
 import java.sql.SQLException;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.SortedSet;
 
 import lotterynumbers.BigLotteryNumberGenerator;
 import membership.registration.Registration;
@@ -31,9 +33,19 @@ public class LogIn {
 					do {
 						int checkedTicketNumber = Utilities.checkTicketNumber();
 						System.out.println("------------------------------------------");
-						System.out.println(BigLotteryNumberGenerator.luckyNumberMapsGenerator(checkedTicketNumber));
-//						System.out
-//								.println(BigLotteryNumberGeneratorSimple.LuckyNumberSetGenerator(checkedTicketNumber));
+
+						// pick randomness by set
+						for (SortedSet<Integer> luckyNumberSet : BigLotteryNumberGenerator
+								.luckyNumberSetsGenerator(checkedTicketNumber)) {
+							System.out.println(luckyNumberSet);
+						}
+
+//						// pick randomness by number
+//						for (SortedSet<Integer> luckyNumberSet : BigLotteryNumberGeneratorSimple
+//								.LuckyNumberSetGenerator(checkedTicketNumber)) {
+//							System.out.println(luckyNumberSet);
+//						}
+
 						System.out.println("------------------------------------------");
 						System.out.println("Press 'C' or 'c' for continue or any other key to go to the last level.");
 						isContinue = new Scanner(System.in).next().equalsIgnoreCase("C");
