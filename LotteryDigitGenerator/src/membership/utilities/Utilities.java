@@ -7,12 +7,33 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import connection.ConnectToSqlServer;
+import person.identity.Account;
 
 public class Utilities {
+	@SuppressWarnings("resource")
+	static public int checkTicketNumber() {
+		System.out.println("Hi, boss!");
+		System.out.println("How many lottery tickets do you want?");
+		System.out.println("Please just input number within 99 along: ");
+		Matcher m;
+		String ticketNumber;
+		do {
+			ticketNumber = new Scanner(System.in).next();
+			Pattern p = Pattern.compile("[0-9]{1,2}");
+			m = p.matcher(ticketNumber);
+			if (!m.matches()) {
+				System.out.println("Please just input number within 99 along: ");
+			}
+
+		} while (!m.matches());
+
+		return Integer.valueOf(ticketNumber);
+	}
+
 	static public void firstPromt() {
 		System.out.println("Press 'I' or 'i' for sign in.");
 		System.out.println("Press 'U' or 'u' for sign up.");
-		System.out.println("Press 'E' or 'e' for exit.");
+		System.out.println("Or press any other key for exit.");
 	}
 
 	static public boolean isAlreadyExist(String emailAddress) throws SQLException {
@@ -46,7 +67,7 @@ public class Utilities {
 	}
 
 	@SuppressWarnings("resource")
-	static public String[] validAccountFormat() {
+	static public Account accountInputPromt() {
 		String emailAddress = "";
 		while (true) {
 			System.out.println("User Email: ");
@@ -55,7 +76,7 @@ public class Utilities {
 				break;
 			} else {
 				System.out.println("Invalid email format!");
-				System.out.print("Please enter again!");
+				System.out.println("Please enter again!");
 			}
 		}
 		String pwd = "";
@@ -66,10 +87,10 @@ public class Utilities {
 				break;
 			} else {
 				System.out.println("Invalid password format!");
-				System.out.print("Please enter again!");
+				System.out.println("Please enter again!");
 			}
 		}
-		String[] validAccount = { emailAddress, pwd };
+		Account validAccount = new Account(emailAddress, pwd);
 		return validAccount;
 	}
 }

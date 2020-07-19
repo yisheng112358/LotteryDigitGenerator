@@ -3,34 +3,42 @@ package hmi;
 import java.sql.SQLException;
 import java.util.Scanner;
 
-import connection.ConnectToMySql;
+import lotterynumbers.BigLotteryNumberGenerator;
 import membership.registration.Registration;
 import membership.utilities.Utilities;
 import membership.verification.ThirdpartyVerification;
+import person.identity.Account;
 import person.identity.Member;
 import person.identity.Visitor;
 
 public class LogIn {
+	@SuppressWarnings("resource")
 	public static void main(String[] args) throws SQLException {
 
 		while (true) {
 			Utilities.firstPromt();
-			@SuppressWarnings("resource")
 			String firstInput = new Scanner(System.in).next();
 
 			if (firstInput.equalsIgnoreCase("I")) {
 				// sign in
 				Visitor visitor = new Visitor();
-				String[] validAccount = Utilities.validAccountFormat();
-				visitor.setuserEmail(validAccount[0]);
-				visitor.setuserPwd(validAccount[1]);
+				Account validAccount = Utilities.accountInputPromt();
+				visitor.setuserEmail(validAccount.getUserEmail());
+				visitor.setuserPwd(validAccount.getUserPassword());
 
 				if (visitor.isTrueMember()) {
-					System.out.println("Hi, welcome!");
-					System.out.println("We will give you 6 magic number~~~");
-					System.out.println("------------------------------------------");
-					System.out.println("Under construction...");
-					System.out.println("------------------------------------------");
+					boolean isContinue = false;
+					do {
+						int checkedTicketNumber = Utilities.checkTicketNumber();
+						System.out.println("------------------------------------------");
+						System.out.println(BigLotteryNumberGenerator.luckyNumberMapsGenerator(checkedTicketNumber));
+//						System.out
+//								.println(BigLotteryNumberGeneratorSimple.LuckyNumberSetGenerator(checkedTicketNumber));
+						System.out.println("------------------------------------------");
+						System.out.println("Press 'C' or 'c' for continue or any other key to go to the last level.");
+						isContinue = new Scanner(System.in).next().equalsIgnoreCase("C");
+					} while (isContinue);
+
 				} else {
 					System.out.println("You are not a member yet.");
 				}
@@ -40,21 +48,19 @@ public class LogIn {
 				Member member = new Member();
 				System.out.println("The length of the password should be at least 8 but no more that 16.");
 				System.out.println("The password should include numbers and letters");
-				String[] validAccount = Utilities.validAccountFormat();
+				Account validAccount = Utilities.accountInputPromt();
 				// check the email is in the local database independently
-				if (Utilities.isAlreadyExist(validAccount[0])) {
+				if (Utilities.isAlreadyExist(validAccount.getUserEmail())) {
 					System.out.println("The email is already exist.");
 				} else {
-					member.setuserEmail(validAccount[0]);
-					member.setuserPwd(validAccount[1]);
+					member.setuserEmail(validAccount.getUserEmail());
+					member.setuserPwd(validAccount.getUserPassword());
 
 					// verification from other database
-					ThirdpartyVerification verification = new ThirdpartyVerification();
-					verification.verify(member);
+					ThirdpartyVerification.verify(member);
 
 					// registration to the local database
-					Registration regist = new Registration(member);
-					regist.register();
+					Registration.register(member);
 
 					// check the email is in the local database independently
 					if (Utilities.isAlreadyExist(member.getuserEmail())) {
@@ -62,21 +68,17 @@ public class LogIn {
 					} else {
 						System.out.println("The sign up is fail, you need to sign up again!");
 					}
-					
+
 				}
 
-			} else if (firstInput.equalsIgnoreCase("E")) {
-				// exit
-				break;
-
 			} else if (firstInput.equalsIgnoreCase("t")) {
-				// test
-				ConnectToMySql connection = new ConnectToMySql();
-				connection.closeConn();
+				// test for developers~
+				System.out.println("This is test mode!!!");
+
 				break;
 
 			} else {
-				System.out.println("Please input 'I', 'U' or 'E'.");
+				break;
 			}
 		}
 
