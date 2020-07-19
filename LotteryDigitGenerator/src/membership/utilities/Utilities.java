@@ -1,15 +1,81 @@
 package membership.utilities;
 
 import java.sql.CallableStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Scanner;
+import java.util.SortedSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import connection.ConnectToSqlServer;
 import person.identity.Account;
+import person.identity.Member;
 
 public class Utilities {
+	public static void register(Member member) throws SQLException {
+		ConnectToSqlServer connection = new ConnectToSqlServer();
+		int isVerified = member.isVerified() ? 1 : 0;
+		String sqlstr = String.format(
+				"Insert Into membership(useremail, userpwd, isverified) Values(\'%s\', \'%s\', \'%d\')",
+				member.getuserEmail(), member.getuserPwd(), isVerified);
+		Statement state = connection.conn.createStatement();
+		int count = state.executeUpdate(sqlstr);
+		System.out.printf("Add %d member into the database.\n", count);
+		state.close();
+		connection.closeConn();
+	}
+
+	public static void insertCustomerRecord(String userEmail, String commaSeparatedStr) throws SQLException {
+		String sqlstr = String.format(
+				"Insert Into BigLotteryCustomerRecord(lotterycustomer, lotterynumbers) Values(\'%s\', \'%s\');",
+				userEmail, commaSeparatedStr);
+		ConnectToSqlServer connection = new ConnectToSqlServer();
+		Statement state = connection.conn.createStatement();
+		state.executeUpdate(sqlstr);
+		state.close();
+		connection.closeConn();
+	}
+
+	static public void persistRretrieveNumbers(String commaSeparatedStr) throws SQLException {
+		if (!queryRretrieveNumbers(commaSeparatedStr)) {
+			insertRretrieveNumbers(commaSeparatedStr);
+		}
+	}
+
+	private static void insertRretrieveNumbers(String commaSeparatedStr) throws SQLException {
+		String sqlstr = String.format("Insert Into BigLotteryRretrieveNumbers(lotterynumbers) Values(\'%s\');",
+				commaSeparatedStr);
+		ConnectToSqlServer connection = new ConnectToSqlServer();
+		Statement state = connection.conn.createStatement();
+		state.executeUpdate(sqlstr);
+		state.close();
+		connection.closeConn();
+	}
+
+	static private boolean queryRretrieveNumbers(String commaSeparatedStr) throws SQLException {
+		String sqlstr = String.format("Select * From BigLotteryRretrieveNumbers where lotterynumbers=\'%s\';",
+				commaSeparatedStr);
+		ConnectToSqlServer connection = new ConnectToSqlServer();
+		Statement state = connection.conn.createStatement();
+		ResultSet rs = state.executeQuery(sqlstr);
+		boolean inDb = false;
+		inDb = rs.next();
+		rs.close();
+		state.close();
+		connection.closeConn();
+		return inDb;
+	}
+
+	public static String luckyNumbersToStr(SortedSet<Integer> luckyNumbers) {
+		String commaSeparatedStr = "";
+		for (int num : luckyNumbers) {
+			commaSeparatedStr += String.valueOf(num) + ",";
+		}
+		return commaSeparatedStr;
+	}
+
 	@SuppressWarnings("resource")
 	static public int checkTicketNumber() {
 		System.out.println("Hi, boss!");

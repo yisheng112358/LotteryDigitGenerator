@@ -2,11 +2,9 @@ package hmi;
 
 import java.sql.SQLException;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.SortedSet;
 
 import lotterynumbers.BigLotteryNumberGenerator;
-import membership.registration.Registration;
 import membership.utilities.Utilities;
 import membership.verification.ThirdpartyVerification;
 import person.identity.Account;
@@ -37,7 +35,10 @@ public class LogIn {
 						// pick randomness by set
 						for (SortedSet<Integer> luckyNumberSet : BigLotteryNumberGenerator
 								.luckyNumberSetsGenerator(checkedTicketNumber)) {
-							System.out.println(luckyNumberSet);
+							String commaSeparatedStr = Utilities.luckyNumbersToStr(luckyNumberSet);
+							Utilities.persistRretrieveNumbers(commaSeparatedStr);
+							Utilities.insertCustomerRecord(visitor.getuserEmail(), commaSeparatedStr);
+							System.out.println("(" + commaSeparatedStr + ")");
 						}
 
 //						// pick randomness by number
@@ -72,7 +73,7 @@ public class LogIn {
 					ThirdpartyVerification.verify(member);
 
 					// registration to the local database
-					Registration.register(member);
+					Utilities.register(member);
 
 					// check the email is in the local database independently
 					if (Utilities.isAlreadyExist(member.getuserEmail())) {

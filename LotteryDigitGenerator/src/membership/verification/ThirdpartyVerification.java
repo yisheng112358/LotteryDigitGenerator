@@ -14,6 +14,7 @@ public class ThirdpartyVerification {
 		String sqlstr = String.format("Select * From emails Where emailaddress=\'%s\';", member.getuserEmail());
 		ResultSet rs = state.executeQuery(sqlstr);
 		boolean userStatus = rs.next();
+		rs.close();
 		state.close();
 		connection.closeConn();
 		member.setVerified(userStatus);
