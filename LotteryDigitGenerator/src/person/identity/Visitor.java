@@ -27,7 +27,7 @@ public class Visitor {
 
 	public boolean isTrueMember() throws SQLException {
 		ConnectToSqlServer connection = new ConnectToSqlServer();
-		CallableStatement callState = connection.conn.prepareCall("{call checkAccount(?, ?)}");
+		CallableStatement callState = connection.getConn().prepareCall("{call checkAccount(?, ?)}");
 		callState.setString(1, this.getuserEmail());
 		callState.registerOutParameter(2, java.sql.Types.NVARCHAR);
 		callState.execute();

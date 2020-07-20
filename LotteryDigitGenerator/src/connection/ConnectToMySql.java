@@ -6,17 +6,21 @@ import java.sql.SQLException;
 
 public class ConnectToMySql {
 
-	public Connection conn;
+	private Connection conn;
 
 	public ConnectToMySql() {
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");			
-			String urlstr = "jdbc:mysql://localhost:3306/emailbox?serverTimezone=UTC";			
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			String urlstr = "jdbc:mysql://localhost:3306/emailbox?serverTimezone=UTC";
 			String user = "user", pwd = "password";
 			conn = DriverManager.getConnection(urlstr, user, pwd);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public Connection getConn() {
+		return conn;
 	}
 
 	public void closeConn() throws SQLException {

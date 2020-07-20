@@ -4,7 +4,7 @@ import membership.utilities.Utilities;
 
 public class Account {
 	private String userEmail;
-	private String userPassword;
+	private String userPwd;
 
 	public Account() {
 		super();
@@ -13,7 +13,7 @@ public class Account {
 	public Account(String userEmail, String userPassword) {
 		super();
 		this.userEmail = userEmail;
-		this.userPassword = userPassword;
+		this.userPwd = userPassword;
 	}
 
 	public String getUserEmail() {
@@ -24,16 +24,16 @@ public class Account {
 		this.userEmail = userEmail;
 	}
 
-	public String getUserPassword() {
-		return userPassword;
+	public String getUserPwd() {
+		return userPwd;
 	}
 
-	public void setUserPassword(String userPassword) {
-		this.userPassword = userPassword;
+	public void setUserPwd(String userPassword) {
+		this.userPwd = userPassword;
 	}
 
 	public boolean isFormatValid() {
-		return Utilities.verifyEmailFormat(getUserEmail()) && Utilities.verifyPwdFormat(getUserPassword());
+		return Utilities.verifyEmailFormat(getUserEmail()) && Utilities.verifyPwdFormat(getUserPwd());
 	}
 
 }

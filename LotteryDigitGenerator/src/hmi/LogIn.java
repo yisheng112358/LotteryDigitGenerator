@@ -26,7 +26,7 @@ public class LogIn {
 				Account validAccount = Utilities.accountInputPromt();
 				if (validAccount != null) {
 					visitor.setuserEmail(validAccount.getUserEmail());
-					visitor.setuserPwd(validAccount.getUserPassword());
+					visitor.setuserPwd(validAccount.getUserPwd());
 				}
 
 				if (visitor.isTrueMember()) {
@@ -68,11 +68,11 @@ public class LogIn {
 				System.out.println("The password should include numbers and letters");
 				Account validAccount = Utilities.accountInputPromt();
 				// check the email is in the local database independently
-				if (Utilities.isAlreadyExist(validAccount.getUserEmail())) {
+				if (Utilities.isEmailAlreadyExist(validAccount.getUserEmail())) {
 					System.out.println("The email is already exist.");
 				} else {
-					member.setuserEmail(validAccount.getUserEmail());
-					member.setuserPwd(validAccount.getUserPassword());
+					member.setUserEmail(validAccount.getUserEmail());
+					member.setUserPwd(validAccount.getUserPwd());
 
 					// verification from other database
 					ThirdpartyVerification.verify(member);
@@ -81,7 +81,7 @@ public class LogIn {
 					Utilities.register(member);
 
 					// check the email is in the local database independently
-					if (Utilities.isAlreadyExist(member.getuserEmail())) {
+					if (Utilities.isEmailAlreadyExist(member.getUserEmail())) {
 						System.out.println("You may login again.");
 					} else {
 						System.out.println("The sign up is fail, you need to sign up again!");

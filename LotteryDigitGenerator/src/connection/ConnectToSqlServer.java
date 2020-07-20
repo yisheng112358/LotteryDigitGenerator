@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class ConnectToSqlServer {
 
-	public Connection conn;
+	private Connection conn;
 
 	public ConnectToSqlServer() {
 		try {
@@ -16,6 +16,10 @@ public class ConnectToSqlServer {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public Connection getConn() {
+		return conn;
 	}
 
 	public void closeConn() throws SQLException {
