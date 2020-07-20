@@ -97,9 +97,11 @@ public class Utilities {
 	}
 
 	static public void firstPromt() {
+		System.out.println("------------------------------------------");
 		System.out.println("Press 'I' or 'i' for sign in.");
 		System.out.println("Press 'U' or 'u' for sign up.");
 		System.out.println("Or press any other key for exit.");
+		System.out.println("------------------------------------------");
 	}
 
 	static public boolean isEmailAlreadyExist(String emailAddress) throws SQLException {

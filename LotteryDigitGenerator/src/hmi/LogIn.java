@@ -6,11 +6,16 @@ import java.util.Scanner;
 import java.util.SortedSet;
 
 import lotterynumbers.BigLotteryNumberGenerator;
+import membership.utilities.BigLotteryCustomerRecord;
 import membership.utilities.Utilities;
+import membership.utilities.dao.BigLotteryCustomerRecordDao;
+import membership.utilities.dao.BigLotteryCustomerRecordDaoFactory;
 import membership.verification.ThirdpartyVerification;
 import person.identity.Account;
 import person.identity.Member;
 import person.identity.Visitor;
+import person.identity.dao.MembershipDao;
+import person.identity.dao.MembershipDaoFactory;
 
 public class LogIn {
 	@SuppressWarnings("resource")
@@ -30,32 +35,53 @@ public class LogIn {
 				}
 
 				if (visitor.isTrueMember()) {
-					boolean isContinue = false;
-					do {
-						int checkedTicketNumber = Utilities.checkTicketNumber();
-						System.out.println("------------------------------------------");
+					System.out.println("------------------------------------------");
+					System.out.println("Press 'N' or 'n' for asking lucky numbers.");
+					System.out.println("Press 'R' or 'r' for checking the records.");
+					System.out.println("Or press any other key to go to the last level.");
+					System.out.println("------------------------------------------");
+					String trueMemberFirstInput = new Scanner(System.in).next();
+					if (trueMemberFirstInput.equalsIgnoreCase("N")) {
+						boolean isContinue = false;
+						do {
+							int checkedTicketNumber = Utilities.checkTicketNumber();
+							// pick randomness by set
+							ArrayList<String> customerRecords = new ArrayList<String>();
+							for (SortedSet<Integer> luckyNumberSet : BigLotteryNumberGenerator
+									.luckyNumberSetsGenerator(checkedTicketNumber)) {
+								String commaSeparatedStr = Utilities.luckyNumbersToStr(luckyNumberSet);
+								customerRecords.add(commaSeparatedStr);
+								Utilities.persistRretrieveNumbers(commaSeparatedStr);
+								System.out.println("(" + commaSeparatedStr + ")");
+							}
+							Utilities.insertCustomerRecord(visitor.getuserEmail(), customerRecords);
 
-						// pick randomness by set
-						ArrayList<String> customerRecords = new ArrayList<String>();
-						for (SortedSet<Integer> luckyNumberSet : BigLotteryNumberGenerator
-								.luckyNumberSetsGenerator(checkedTicketNumber)) {
-							String commaSeparatedStr = Utilities.luckyNumbersToStr(luckyNumberSet);
-							customerRecords.add(commaSeparatedStr);
-							Utilities.persistRretrieveNumbers(commaSeparatedStr);
-							System.out.println("(" + commaSeparatedStr + ")");
+//							// pick randomness by number
+//							for (SortedSet<Integer> luckyNumberSet : BigLotteryNumberGeneratorSimple
+//									.LuckyNumberSetGenerator(checkedTicketNumber)) {
+//								System.out.println(luckyNumberSet);
+//							}
+
+							System.out.println("------------------------------------------");
+							System.out
+									.println("Press 'C' or 'c' for continue or any other key to go to the last level.");
+							isContinue = new Scanner(System.in).next().equalsIgnoreCase("C");
+						} while (isContinue);
+
+					} else if (trueMemberFirstInput.equalsIgnoreCase("R")) {
+						System.out.println(visitor.getuserEmail() + " You have asked the numbers below:");
+						BigLotteryCustomerRecordDao bDao = BigLotteryCustomerRecordDaoFactory
+								.createBigLotteryCustomerRecordDao();
+						bDao.createConn();
+						ArrayList<BigLotteryCustomerRecord> customerRecords = new ArrayList<BigLotteryCustomerRecord>();
+						customerRecords.addAll(bDao.findByEmail(visitor.getuserEmail()));
+						for (BigLotteryCustomerRecord record : customerRecords) {
+							System.out.println(record.getLotterynumbers());
 						}
-						Utilities.insertCustomerRecord(visitor.getuserEmail(), customerRecords);
-
-//						// pick randomness by number
-//						for (SortedSet<Integer> luckyNumberSet : BigLotteryNumberGeneratorSimple
-//								.LuckyNumberSetGenerator(checkedTicketNumber)) {
-//							System.out.println(luckyNumberSet);
-//						}
-
+						System.out.println("The end of the records.");
+						bDao.closeConn();
 						System.out.println("------------------------------------------");
-						System.out.println("Press 'C' or 'c' for continue or any other key to go to the last level.");
-						isContinue = new Scanner(System.in).next().equalsIgnoreCase("C");
-					} while (isContinue);
+					}
 
 				} else {
 					System.out.println("You are not a member yet.");
@@ -89,7 +115,7 @@ public class LogIn {
 
 				}
 
-			} else if (firstInput.equalsIgnoreCase("t")) {
+			} else if (firstInput.equalsIgnoreCase("T")) {
 				// test for developers~
 				System.out.println("This is test mode!!!");
 
