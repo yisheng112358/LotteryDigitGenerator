@@ -1,6 +1,7 @@
 package hmi;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.SortedSet;
 
@@ -35,13 +36,15 @@ public class LogIn {
 						System.out.println("------------------------------------------");
 
 						// pick randomness by set
+						ArrayList<String> customerRecords = new ArrayList<String>();
 						for (SortedSet<Integer> luckyNumberSet : BigLotteryNumberGenerator
 								.luckyNumberSetsGenerator(checkedTicketNumber)) {
 							String commaSeparatedStr = Utilities.luckyNumbersToStr(luckyNumberSet);
+							customerRecords.add(commaSeparatedStr);
 							Utilities.persistRretrieveNumbers(commaSeparatedStr);
-							Utilities.insertCustomerRecord(visitor.getuserEmail(), commaSeparatedStr);
 							System.out.println("(" + commaSeparatedStr + ")");
 						}
+						Utilities.insertCustomerRecord(visitor.getuserEmail(), customerRecords);
 
 //						// pick randomness by number
 //						for (SortedSet<Integer> luckyNumberSet : BigLotteryNumberGeneratorSimple

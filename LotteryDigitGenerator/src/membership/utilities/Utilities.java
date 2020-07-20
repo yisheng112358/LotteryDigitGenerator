@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.SortedSet;
 import java.util.regex.Matcher;
@@ -32,13 +33,16 @@ public class Utilities {
 		connection.closeConn();
 	}
 
-	public static void insertCustomerRecord(String userEmail, String commaSeparatedStr) throws SQLException {
+	public static void insertCustomerRecord(String userEmail, ArrayList<String> customerRecords) throws SQLException {
 		String sqlstr = "Insert Into BigLotteryCustomerRecord(lotterycustomer, lotterynumbers) Values(?, ?);";
 		ConnectToSqlServer connection = new ConnectToSqlServer();
 		PreparedStatement preState = connection.conn.prepareStatement(sqlstr);
-		preState.setString(1, userEmail);
-		preState.setString(2, commaSeparatedStr);
-		preState.execute();
+		for (String customerRecord : customerRecords) {
+			preState.setString(1, userEmail);
+			preState.setString(2, customerRecord);
+			preState.addBatch();
+		}
+		preState.executeBatch();
 		preState.close();
 		connection.closeConn();
 	}
