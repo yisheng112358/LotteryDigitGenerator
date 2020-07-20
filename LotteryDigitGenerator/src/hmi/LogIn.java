@@ -23,8 +23,10 @@ public class LogIn {
 				// sign in
 				Visitor visitor = new Visitor();
 				Account validAccount = Utilities.accountInputPromt();
-				visitor.setuserEmail(validAccount.getUserEmail());
-				visitor.setuserPwd(validAccount.getUserPassword());
+				if (validAccount != null) {
+					visitor.setuserEmail(validAccount.getUserEmail());
+					visitor.setuserPwd(validAccount.getUserPassword());
+				}
 
 				if (visitor.isTrueMember()) {
 					boolean isContinue = false;

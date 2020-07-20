@@ -142,7 +142,10 @@ public class Utilities {
 				break;
 			} else {
 				System.out.println("Invalid email format!");
-				System.out.println("Please enter again!");
+				System.out.println("Press 'E' or 'e' for exit or press other keys for the input again!");
+				if (new Scanner(System.in).next().equalsIgnoreCase("E")) {
+					return null;
+				}
 			}
 		}
 		String pwd = "";
@@ -153,7 +156,10 @@ public class Utilities {
 				break;
 			} else {
 				System.out.println("Invalid password format!");
-				System.out.println("Please enter again!");
+				System.out.println("Press 'E' or 'e' for exit or press other keys for the input again!");
+				if (new Scanner(System.in).next().equalsIgnoreCase("E")) {
+					return null;
+				}
 			}
 		}
 		Account validAccount = new Account(emailAddress, pwd);
