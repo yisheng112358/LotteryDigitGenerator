@@ -1,6 +1,7 @@
 package membership.utilities;
 
 import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -15,26 +16,30 @@ import person.identity.Member;
 
 public class Utilities {
 	public static void register(Member member) throws SQLException {
+		String sqlstr = "Insert Into membership(useremail, userpwd, isverified) Values(?, ?, ?);";
 		ConnectToSqlServer connection = new ConnectToSqlServer();
-		int isVerified = member.isVerified() ? 1 : 0;
-		String sqlstr = String.format(
-				"Insert Into membership(useremail, userpwd, isverified) Values(\'%s\', \'%s\', \'%d\')",
-				member.getuserEmail(), member.getuserPwd(), isVerified);
-		Statement state = connection.conn.createStatement();
-		int count = state.executeUpdate(sqlstr);
-		System.out.printf("Add %d member into the database.\n", count);
-		state.close();
+		PreparedStatement preState = connection.conn.prepareStatement(sqlstr);
+		preState.setString(1, member.getuserEmail());
+		preState.setString(2, member.getuserPwd());
+		preState.setInt(3, member.isVerified() ? 1 : 0);
+		boolean addSuccess = preState.execute();
+		if (!addSuccess) {
+			System.out.printf("Welcome to join the members!");
+		} else {
+			System.out.printf("You are not welcome here! HA~HA~HA~~~");
+		}
+		preState.close();
 		connection.closeConn();
 	}
 
 	public static void insertCustomerRecord(String userEmail, String commaSeparatedStr) throws SQLException {
-		String sqlstr = String.format(
-				"Insert Into BigLotteryCustomerRecord(lotterycustomer, lotterynumbers) Values(\'%s\', \'%s\');",
-				userEmail, commaSeparatedStr);
+		String sqlstr = "Insert Into BigLotteryCustomerRecord(lotterycustomer, lotterynumbers) Values(?, ?);";
 		ConnectToSqlServer connection = new ConnectToSqlServer();
-		Statement state = connection.conn.createStatement();
-		state.executeUpdate(sqlstr);
-		state.close();
+		PreparedStatement preState = connection.conn.prepareStatement(sqlstr);
+		preState.setString(1, userEmail);
+		preState.setString(2, commaSeparatedStr);
+		preState.execute();
+		preState.close();
 		connection.closeConn();
 	}
 
@@ -45,25 +50,25 @@ public class Utilities {
 	}
 
 	private static void insertRretrieveNumbers(String commaSeparatedStr) throws SQLException {
-		String sqlstr = String.format("Insert Into BigLotteryRretrieveNumbers(lotterynumbers) Values(\'%s\');",
-				commaSeparatedStr);
+		String sqlstr = "Insert Into BigLotteryRretrieveNumbers(lotterynumbers) Values(?);";
 		ConnectToSqlServer connection = new ConnectToSqlServer();
-		Statement state = connection.conn.createStatement();
-		state.executeUpdate(sqlstr);
-		state.close();
+		PreparedStatement preState = connection.conn.prepareStatement(sqlstr);
+		preState.setString(1, commaSeparatedStr);
+		preState.execute();
+		preState.close();
 		connection.closeConn();
 	}
 
 	static private boolean queryRretrieveNumbers(String commaSeparatedStr) throws SQLException {
-		String sqlstr = String.format("Select * From BigLotteryRretrieveNumbers where lotterynumbers=\'%s\';",
-				commaSeparatedStr);
+		String sqlstr = "Select * From BigLotteryRretrieveNumbers where lotterynumbers=?;";
 		ConnectToSqlServer connection = new ConnectToSqlServer();
-		Statement state = connection.conn.createStatement();
-		ResultSet rs = state.executeQuery(sqlstr);
+		PreparedStatement preState = connection.conn.prepareStatement(sqlstr);
+		preState.setString(1, commaSeparatedStr);
+		ResultSet rs = preState.executeQuery();
 		boolean inDb = false;
 		inDb = rs.next();
 		rs.close();
-		state.close();
+		preState.close();
 		connection.closeConn();
 		return inDb;
 	}
