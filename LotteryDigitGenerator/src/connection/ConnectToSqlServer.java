@@ -11,7 +11,7 @@ public class ConnectToSqlServer {
 	public ConnectToSqlServer() {
 		try {
 			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-			String urlstr = "jdbc:sqlserver://localhost:1433;databaseName=membership;user=user;password=password";
+			String urlstr = "jdbc:sqlserver://localhost:1433;databaseName=master;user=sa;password=P@ssw0rd";
 			conn = DriverManager.getConnection(urlstr);
 		} catch (Exception e) {
 			e.printStackTrace();

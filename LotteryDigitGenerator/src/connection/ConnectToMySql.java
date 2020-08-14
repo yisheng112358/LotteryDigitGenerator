@@ -12,7 +12,7 @@ public class ConnectToMySql {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			String urlstr = "jdbc:mysql://localhost:3306/emailbox?serverTimezone=UTC";
-			String user = "user", pwd = "password";
+			String user = "user", pwd = "P@ssw0rd";
 			conn = DriverManager.getConnection(urlstr, user, pwd);
 		} catch (Exception e) {
 			e.printStackTrace();
