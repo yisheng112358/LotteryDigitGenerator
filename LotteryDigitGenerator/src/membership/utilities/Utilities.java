@@ -100,7 +100,7 @@ public class Utilities {
 		System.out.println("------------------------------------------");
 		System.out.println("Press 'I' or 'i' for sign in.");
 		System.out.println("Press 'U' or 'u' for sign up.");
-		System.out.println("Or press any other key for exit.");
+		System.out.println("Or enter any other character key for exit.");
 		System.out.println("------------------------------------------");
 	}
 

@@ -38,7 +38,7 @@ public class LogIn {
 					System.out.println("------------------------------------------");
 					System.out.println("Press 'N' or 'n' for asking lucky numbers.");
 					System.out.println("Press 'R' or 'r' for checking the records.");
-					System.out.println("Or press any other key to go to the last level.");
+					System.out.println("Or enter any character to go to the last level.");
 					System.out.println("------------------------------------------");
 					String trueMemberFirstInput = new Scanner(System.in).next();
 					if (trueMemberFirstInput.equalsIgnoreCase("N")) {
